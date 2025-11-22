@@ -5,12 +5,17 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
     public function show(Request $request)
     {
+        Log::info("ProfileController@show called", [
+            "user_id" => $request->user()->id,
+        ]);
+
         $user = $request
             ->user()
             ->load(["reviews.destination", "savedDestinations.destination"]);
@@ -20,6 +25,12 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
+        Log::info("ProfileController@update called", [
+            "user_id" => $request->user()->id,
+            "has_name" => $request->filled("name"),
+            "has_photo" => $request->hasFile("photo"),
+        ]);
+
         $user = $request->user();
 
         $request->validate([
@@ -51,6 +62,10 @@ class ProfileController extends Controller
 
     public function updatePassword(Request $request)
     {
+        Log::info("ProfileController@updatePassword called", [
+            "user_id" => $request->user()->id,
+        ]);
+
         $request->validate([
             "current_password" => "required|string",
             "password" => "required|string|min:8|confirmed",

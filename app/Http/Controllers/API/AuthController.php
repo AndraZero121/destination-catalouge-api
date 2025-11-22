@@ -5,14 +5,20 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        Log::info("AuthController@register called", [
+            "ip" => $request->ip(),
+            "has_email" => $request->filled("email"),
+            "has_phone" => $request->filled("phone"),
+        ]);
+
         $request->validate([
             "name" => "required|string|max:255",
             "email" => "nullable|email|unique:users,email",
@@ -51,6 +57,11 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        Log::info("AuthController@login called", [
+            "ip" => $request->ip(),
+            "login" => $request->input("login"),
+        ]);
+
         $request->validate([
             "login" => "required|string",
             "password" => "required|string",
@@ -80,6 +91,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        Log::info("AuthController@logout called", [
+            "user_id" => $request->user()->id,
+            "ip" => $request->ip(),
+        ]);
+
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([

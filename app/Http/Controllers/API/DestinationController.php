@@ -5,11 +5,17 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Destination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class DestinationController extends Controller
 {
     public function index(Request $request)
     {
+        Log::info("DestinationController@index called", [
+            "user_id" => optional($request->user())->id,
+            "filters" => $request->all(),
+        ]);
+
         $query = Destination::with([
             "category",
             "province",
@@ -77,6 +83,11 @@ class DestinationController extends Controller
 
     public function show($id)
     {
+        Log::info("DestinationController@show called", [
+            "destination_id" => $id,
+            "user_id" => optional(request()->user())->id,
+        ]);
+
         $destination = Destination::with([
             "category",
             "province",
@@ -93,6 +104,10 @@ class DestinationController extends Controller
 
     public function slider()
     {
+        Log::info("DestinationController@slider called", [
+            "user_id" => optional(request()->user())->id,
+        ]);
+
         $destinations = Destination::with("photos")->latest()->limit(5)->get();
 
         return response()->json($destinations);
