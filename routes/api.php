@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\DestinationController;
+use App\Http\Controllers\API\DestinationAdminController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\SavedDestinationController;
@@ -14,6 +15,21 @@ RateLimiter::for("auth-api", function (Request $request) {
     return Limit::perMinute(60)->by(
         $request->user()?->id ?? $request->ip(),
     );
+});
+
+// Tambahkan endpoint sederhana untuk /api (root API) agar mudah melihat API berjalan
+Route::get('/', function () {
+    return response()->json([
+        'status' => 'ok',
+        'message' => 'API is running. Use /api/<endpoint>. Example endpoints listed in "routes".',
+        'routes' => [
+            'GET  /api/destinations',
+            'GET  /api/destinations/slider',
+            'GET  /api/destinations/{id}',
+            'POST /api/register',
+            'POST /api/login',
+        ],
+    ]);
 });
 
 // Public routes
@@ -51,4 +67,7 @@ Route::middleware(["auth:sanctum", "throttle:auth-api"])->group(function () {
         SavedDestinationController::class,
         "destroy",
     ]);
+
+    // Add destination (requires auth) — backend handler in DestinationAdminController
+    Route::post("/destinations", [DestinationAdminController::class, "store"]);
 });
