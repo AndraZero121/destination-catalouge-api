@@ -17,13 +17,16 @@ class CategorySeeder extends Seeder
             "Museum",
             "Kuliner",
             "Belanja",
+            "Air Terjun",
+            "Danau",
+            "Sejarah",
         ];
 
         foreach ($categories as $category) {
-            Category::create([
-                "name" => $category,
-                "slug" => Str::slug($category),
-            ]);
+            Category::updateOrCreate(
+                ["slug" => Str::slug($category)],
+                ["name" => $category],
+            );
         }
     }
 }

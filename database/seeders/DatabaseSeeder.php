@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             ProvinceSeeder::class,
             DestinationSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

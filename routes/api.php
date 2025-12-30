@@ -19,17 +19,24 @@ RateLimiter::for("auth-api", function (Request $request) {
 
 // Tambahkan endpoint sederhana untuk /api (root API) agar mudah melihat API berjalan
 Route::get('/', function () {
-    return response()->json([
-        'status' => 'ok',
-        'message' => 'API is running. Use /api/<endpoint>. Example endpoints listed in "routes".',
-        'routes' => [
-            'GET  /api/destinations',
-            'GET  /api/destinations/slider',
-            'GET  /api/destinations/{id}',
-            'POST /api/register',
-            'POST /api/login',
-        ],
-    ]);
+    if(app()->environment('local')) {
+        return response()->json([
+            'environment' => app()->environment(),
+            'status' => 'ok',
+            'message' => 'API is running. Use /api/endpoint. Example endpoints listed in routes.  You can register and login to get access to protected routes at /login and /register in your url.',
+            'routes' => [
+                'GET  /api/destinations',
+                'GET  /api/destinations/slider',
+                'GET  /api/destinations/{id}',
+                'POST /api/register',
+                'POST /api/login',
+            ],
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'API is running',
+        ]);
+    }
 });
 
 // Public routes

@@ -1,26 +1,38 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-md mx-auto">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Login</h1>
-    
-    <form id="login-form" class="space-y-4">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input id="email" type="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+<div class="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+    <div class="space-y-4">
+        <p class="text-sm uppercase text-slate-500 tracking-[0.12em]">Selamat datang</p>
+        <h1 class="text-3xl font-semibold text-slate-900 tracking-tight">Masuk ke Destination Catalogue</h1>
+        <p class="text-slate-600">Nikmati pengalaman jelajah destinasi yang lebih terkurasi dan simpan inspirasi liburanmu.</p>
+        <div class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 text-sm text-slate-700">
+            <p class="font-semibold text-slate-900 mb-1">Tips cepat</p>
+            <p>Gunakan email yang sama dengan akun mobilemu agar review dan simpanan selalu sinkron.</p>
         </div>
+    </div>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input id="password" type="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-        </div>
+    <div class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-6 shadow-sm">
+        <h2 class="text-xl font-semibold text-slate-900 mb-4">Login</h2>
+        
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                <input id="email" type="email" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+            </div>
 
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition">Login</button>
-    </form>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                <input id="password" type="password" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+            </div>
 
-    <p class="text-center text-gray-600 mt-4">Belum punya akun? <a href="/register" class="text-blue-600 hover:underline">Register</a></p>
+            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl transition">Login</button>
+        </form>
 
-    <div id="login-msg" class="mt-4 p-3 bg-red-50 text-red-700 rounded-lg hidden"></div>
+        <p class="text-center text-slate-600 mt-4">Belum punya akun? <a href="/register" class="text-blue-600 hover:underline">Register</a></p>
+
+        <div id="login-msg" class="mt-4 p-3 bg-red-50 text-red-700 rounded-lg hidden"></div>
+    </div>
 </div>
 @endsection
 

@@ -1,87 +1,102 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex items-center justify-between mb-6">
-    <h1 class="text-3xl font-bold text-gray-800">Destinations</h1>
-    <div>
-        <!-- tombol tambah hanya muncul bila user login -->
-        <button id="open-add" class="hidden px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">+ Tambah Destinasi</button>
-    </div>
-</div>
-
-<div id="dest-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- menampilkan loading / kosong / daftar -->
-    <div id="dest-empty" class="col-span-full text-center text-gray-500 hidden">
-        <img src="https://cdn.jsdelivr.net/gh/heroicons/heroicons@1.0.6/optimized/illustration/devices.svg" alt="empty" class="mx-auto mb-4 w-48 opacity-70">
-        <h3 class="text-lg font-semibold mb-2">Belum ada destinasi</h3>
-        <p class="text-sm text-gray-500 mb-4">Belum ada data destinasi. Jika Anda ingin, tambahkan destinasi baru.</p>
+<div class="space-y-8">
+    <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-            <a href="/dashboard" class="inline-block px-4 py-2 bg-gray-200 text-gray-700 rounded-lg mr-2">Kembali ke Dashboard</a>
-            <button id="open-add-empty" class="inline-block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 hidden">+ Tambah Destinasi</button>
+            <p class="text-sm uppercase text-slate-500 tracking-[0.12em]">Katalog</p>
+            <h1 class="text-3xl font-semibold text-slate-900 tracking-tight">Destinations</h1>
+            <p class="text-slate-600 mt-2">Jelajahi lokasi menarik dengan detail budget, kategori, dan foto yang tertata.</p>
+        </div>
+        <div class="flex gap-3">
+            <!-- tombol tambah hanya muncul bila user login -->
+            <button id="open-add" class="hidden px-4 py-2.5 rounded-xl bg-slate-900 text-white font-semibold shadow-lg shadow-slate-900/10 hover:-translate-y-0.5 transition">+ Tambah Destinasi</button>
+            <a href="/dashboard" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:border-blue-400 hover:text-blue-600 transition">Kembali</a>
         </div>
     </div>
 
-    <div id="dest-loading" class="col-span-full text-center text-gray-500">
-        Memuat destinasi...
+    <div class="rounded-2xl border border-slate-200 bg-white/70 backdrop-blur p-4 md:p-6 shadow-sm">
+        <div id="dest-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- menampilkan loading / kosong / daftar -->
+            <div id="dest-empty" class="col-span-full text-center text-slate-500 hidden">
+                <div class="mx-auto mb-4 h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center text-2xl">📭</div>
+                <h3 class="text-lg font-semibold mb-2 text-slate-800">Belum ada destinasi</h3>
+                <p class="text-sm text-slate-600 mb-4">Tambah destinasi baru untuk mulai mengisi katalog perjalananmu.</p>
+                <div class="flex items-center justify-center gap-3 flex-wrap">
+                    <a href="/dashboard" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-700">Kembali ke Dashboard</a>
+                    <button id="open-add-empty" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-semibold hover:-translate-y-0.5 transition hidden">+ Tambah Destinasi</button>
+                </div>
+            </div>
+
+            <div id="dest-loading" class="col-span-full text-center text-slate-500">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-700">
+                    <span class="h-2 w-2 rounded-full bg-blue-500 animate-ping"></span>
+                    Memuat destinasi...
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Modal: Add Destination (sama seperti sebelumnya, hidden by default) -->
-<div id="modal-add" class="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center py-12 hidden">
-  <div class="bg-white rounded-lg w-full max-w-2xl p-6 shadow-lg">
+<div id="modal-add" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-start justify-center py-12 px-4 hidden z-50">
+  <div class="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-2xl border border-slate-100">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-bold">Tambah Destinasi</h2>
-      <button id="close-add" class="text-gray-500 hover:text-gray-800">✕</button>
+      <div>
+        <p class="text-xs uppercase text-slate-500 tracking-[0.16em]">Tambah</p>
+        <h2 class="text-2xl font-semibold text-slate-900">Destinasi baru</h2>
+      </div>
+      <button id="close-add" class="text-slate-500 hover:text-slate-900 text-xl">✕</button>
     </div>
 
     <div id="add-msg" class="mb-3 hidden p-3 rounded"></div>
 
     <form id="add-form" class="space-y-3" enctype="multipart/form-data">
       <div>
-        <label class="block text-sm font-medium text-gray-700">Nama</label>
-        <input name="name" required class="w-full px-3 py-2 border rounded" />
+        <label class="block text-sm font-medium text-slate-700 mb-1">Nama</label>
+        <input name="name" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
-        <textarea name="description" rows="3" class="w-full px-3 py-2 border rounded"></textarea>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Deskripsi</label>
+        <textarea name="description" rows="3" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"></textarea>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Budget Min</label>
-          <input name="budget_min" type="number" class="w-full px-3 py-2 border rounded" />
+          <label class="block text-sm font-medium text-slate-700 mb-1">Budget Min</label>
+          <input name="budget_min" type="number" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Budget Max</label>
-          <input name="budget_max" type="number" class="w-full px-3 py-2 border rounded" />
+          <label class="block text-sm font-medium text-slate-700 mb-1">Budget Max</label>
+          <input name="budget_max" type="number" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
         </div>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Fasilitas (koma pisah)</label>
-        <input name="facilities" class="w-full px-3 py-2 border rounded" />
+        <label class="block text-sm font-medium text-slate-700 mb-1">Fasilitas (koma pisah)</label>
+        <input name="facilities" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Latitude</label>
-          <input name="latitude" class="w-full px-3 py-2 border rounded" />
+          <label class="block text-sm font-medium text-slate-700 mb-1">Latitude</label>
+          <input name="latitude" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Longitude</label>
-          <input name="longitude" class="w-full px-3 py-2 border rounded" />
+          <label class="block text-sm font-medium text-slate-700 mb-1">Longitude</label>
+          <input name="longitude" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
         </div>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Photos (multiple)</label>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Photos (multiple)</label>
         <input name="photos[]" type="file" multiple accept="image/*" class="w-full" />
       </div>
 
       <div class="flex justify-end gap-2 mt-4">
-        <button type="button" id="cancel-add" class="px-4 py-2 border rounded">Batal</button>
-        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Simpan</button>
+        <button type="button" id="cancel-add" class="px-4 py-2 border border-slate-200 rounded-xl">Batal</button>
+        <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded-xl font-semibold hover:-translate-y-0.5 transition">Simpan</button>
       </div>
     </form>
   </div>
@@ -139,16 +154,36 @@ async function loadDestinations(){
         }
 
         destEmptyEl.classList.add('hidden');
-        const html = items.map(d=>`
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
-                <img src="${d.photos && d.photos[0] ? d.photos[0].photo_url : 'https://via.placeholder.com/600x350'}" alt="${d.name}" class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <a href="/frontend/destinations/${d.id}" class="font-bold text-lg text-gray-800 hover:text-blue-600">${d.name}</a>
-                    <p class="text-sm text-gray-500 mt-1">${d.category?.name || ''} • ${d.city?.name || ''}</p>
-                    <p class="text-gray-600 text-sm mt-2">${(d.description||'').slice(0,140)}${(d.description||'').length>140 ? '...' : ''}</p>
-                    <p class="text-blue-600 font-semibold mt-3">Rp ${new Intl.NumberFormat('id-ID').format(d.budget_min||0)} - Rp ${new Intl.NumberFormat('id-ID').format(d.budget_max||0)}</p>
+        const html = items.map(d=>{
+            const cover = d.photos && d.photos[0] ? d.photos[0].photo_url : 'https://via.placeholder.com/900x600?text=Destination';
+            const desc = (d.description||'').slice(0,140) + ((d.description||'').length>140 ? '...' : '');
+            const budget = `Rp ${new Intl.NumberFormat('id-ID').format(d.budget_min||0)} • Rp ${new Intl.NumberFormat('id-ID').format(d.budget_max||0)}`;
+            const reviews = Array.isArray(d.reviews) ? d.reviews : [];
+            const avgRating = reviews.length ? (reviews.reduce((a,b)=>a+(b.rating||0),0)/reviews.length).toFixed(1) : null;
+            return `
+            <div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/80 backdrop-blur shadow-sm hover:-translate-y-1 hover:shadow-xl transition transform">
+                <div class="relative h-48">
+                    <img src="${cover}" alt="${d.name}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/25 to-transparent"></div>
+                    <div class="absolute bottom-3 left-3 flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white/80 text-slate-900 backdrop-blur">${d.category?.name || 'Tanpa kategori'}</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-black/30 text-white backdrop-blur">${d.city?.name || 'Lokasi'}</span>
+                        ${avgRating ? `<span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-100 backdrop-blur">⭐ ${avgRating}</span>` : ''}
+                    </div>
                 </div>
-            </div>`).join('');
+                <div class="p-5 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <a href="/frontend/destinations/${d.id}" class="font-semibold text-lg text-slate-900 tracking-tight leading-tight hover:text-blue-700 transition">${d.name}</a>
+                        <span class="text-xs uppercase tracking-[0.18em] text-slate-400">ID ${d.id}</span>
+                    </div>
+                    <p class="text-sm text-slate-600 leading-relaxed">${desc}</p>
+                    <div class="flex items-center justify-between text-sm text-slate-700">
+                        <p class="font-semibold text-blue-700">${budget}</p>
+                        <a href="/frontend/destinations/${d.id}" class="inline-flex items-center gap-2 text-slate-700 font-semibold group-hover:text-blue-700 transition">Detail <span aria-hidden="true">→</span></a>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
         destListEl.innerHTML = html;
         showAddIfAuth();
     }catch(err){

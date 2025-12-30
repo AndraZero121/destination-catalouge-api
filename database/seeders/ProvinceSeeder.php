@@ -14,13 +14,15 @@ class ProvinceSeeder extends Seeder
             "Jawa Tengah" => ["Semarang", "Solo", "Magelang"],
             "Jawa Barat" => ["Bandung", "Bogor", "Depok"],
             "Jawa Timur" => ["Surabaya", "Malang", "Batu"],
+            "Bali" => ["Denpasar", "Ubud", "Kuta"],
+            "DKI Jakarta" => ["Jakarta Pusat", "Jakarta Selatan", "Kepulauan Seribu"],
         ];
 
         foreach ($provinces as $provinceName => $cities) {
-            $province = Province::create(["name" => $provinceName]);
+            $province = Province::updateOrCreate(["name" => $provinceName]);
 
             foreach ($cities as $cityName) {
-                City::create([
+                City::updateOrCreate([
                     "province_id" => $province->id,
                     "name" => $cityName,
                 ]);

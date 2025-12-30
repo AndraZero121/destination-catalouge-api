@@ -1,59 +1,68 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Tourism App Server (Laravel)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Backend REST API + Blade frontends for destination catalogue, reviews, saved destinations, and user profiles.
 
-## About Laravel
+## Tech Stack
+- PHP 8.2+, Laravel 10 + Sanctum
+- MySQL/MariaDB
+- Tailwind (CDN) + Blade for frontend pages
+- Axios for API calls
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
+- PHP 8.2+ with `pdo_mysql`, `openssl`, `mbstring`, `tokenizer`, `json`, `ctype`, `fileinfo`
+- Composer
+- Node 18+ (only needed if you want to rebuild assets; current Blade pages use CDN Tailwind)
+- MySQL/MariaDB server
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Quick Start
+```bash
+cp .env.example .env      # set DB_*, APP_URL
+composer install
+php artisan key:generate
+php artisan storage:link  # needed for uploaded profile photos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Option A: use migrations + seeders (recommended)
+php artisan migrate --seed
 
-## Learning Laravel
+# Option B: import provided SQL snapshot instead of seeding
+mysql -uUSER -pPASSWORD db_advance_extend < dump-db_advance_extend-202512300924.sql
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+(Optional, but if you want it's okay)
+npm install/bun install/yarn install
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+php artisan serve/composer run dev
+```
 
-## Laravel Sponsors
+## Database & Seed Data
+- Seeders create:
+  - Users: admin@example.com, budi@example.com, siti@example.com (password: `password123`)
+  - Categories (9): Pantai, Gunung, Taman, Museum, Kuliner, Belanja, Air Terjun, Danau, Sejarah
+  - Provinces: Jawa Tengah, Jawa Barat, Jawa Timur, Bali, DKI Jakarta (+ cities)
+  - Destinations: Parangtritis, Bromo, Kawah Putih, Tanah Lot, Monas, Curug Cimahi, Lawang Sewu, Ranu Kumbolo (+ photos)
+- SQL dump `dump-db_advance_extend-202512300924.sql` mirrors the seed data; import if you want ready records without running seeders.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Running Tests
+```bash
+php artisan test
+```
 
-### Premium Partners
+## API Overview (prefix: /api)
+- Auth: `POST /register`, `POST /login`, `POST /logout`
+- Profile: `GET /profile`, `POST /profile/update` (name/photo multipart), `POST /profile/password`
+- Destinations: `GET /destinations`, `GET /destinations/slider`, `GET /destinations/{id}`, `POST /destinations` (admin/auth)
+- Reviews: `POST /reviews`, `GET /reviews/my`, `DELETE /reviews/{id}`
+- Saved: `GET /saved`, `POST /saved`, `DELETE /saved/{id}`
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Frontend Pages
+- `/login`, `/register`
+- `/dashboard`
+- `/frontend/destinations`, `/frontend/saved`
+- `/frontend/profile`
 
-## Contributing
+## File Uploads
+- Profile photos are stored on `storage/app/public/profile-photos` and served via `/storage/...`. Run `php artisan storage:link` before uploading.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Common Issues
+- 404 on `/storage/...`: run `php artisan storage:link`.
+- Auth 401: ensure `Authorization: Bearer <token>` header (token from `/api/login`).
+- SQL import errors: create database first (`CREATE DATABASE db_advance_extend;`) and ensure user has privileges.

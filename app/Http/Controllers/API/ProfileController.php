@@ -20,7 +20,18 @@ class ProfileController extends Controller
             ->user()
             ->load(["reviews.destination", "savedDestinations.destination"]);
 
-        return response()->json($user);
+        $latestReview = $user
+            ->reviews()
+            ->with("destination")
+            ->latest()
+            ->first();
+
+        $response = $user->toArray();
+        $response["latest_review"] = $latestReview;
+        $response["reviews_count"] = $user->reviews()->count();
+        $response["saved_count"] = $user->savedDestinations()->count();
+
+        return response()->json($response);
     }
 
     public function update(Request $request)
@@ -35,7 +46,8 @@ class ProfileController extends Controller
 
         $request->validate([
             "name" => "sometimes|string|max:255",
-            "photo" => "sometimes|image|mimes:jpeg,png,jpg|max:2048",
+            // Allow larger and modern formats to avoid false validation failures on common uploads
+            "photo" => "sometimes|nullable|image|mimes:jpeg,png,jpg,webp|max:5120",
         ]);
 
         if ($request->has("name")) {
