@@ -1,22 +1,36 @@
+@php($appPage = true)
 @extends('layouts.app')
 
 @section('content')
-<div class="space-y-6">
-    <div class="flex items-start justify-between flex-wrap gap-3">
-        <div>
-            <p class="text-sm uppercase text-slate-500 tracking-[0.12em]">Kontribusi</p>
-            <h1 class="text-3xl font-semibold text-slate-900 tracking-tight">My Reviews</h1>
-            <p class="text-slate-600 mt-2">Kelola ulasan yang sudah kamu tulis dan bagikan pengalaman terbaikmu.</p>
+<div class="app-shell" data-aos="fade-up">
+    <div class="rounded-3xl overflow-hidden bg-[#0f4d1f] text-white">
+        <div class="p-4 flex items-center justify-between">
+            <a href="/dashboard" class="h-9 w-9 rounded-full bg-white/15 flex items-center justify-center">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div class="font-semibold">Reviews</div>
+            <a href="/frontend/destinations" class="h-9 w-9 rounded-full bg-white/15 flex items-center justify-center">
+                <i class="fa-solid fa-compass"></i>
+            </a>
         </div>
-        <a href="/frontend/destinations" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:border-blue-400 hover:text-blue-600 transition">Cari destinasi lain</a>
     </div>
 
-    <div id="reviews-list" class="space-y-4">
-        <div class="text-center text-slate-500">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-700">
-                <span class="h-2 w-2 rounded-full bg-blue-500 animate-ping"></span>
-                Memuat...
+    <div class="-mt-4 app-card p-4 space-y-4">
+        <div class="app-card p-4">
+            <div class="flex items-center gap-4">
+                <div>
+                    <div id="avg-rating" class="text-3xl font-semibold text-amber-500">-</div>
+                    <div class="text-amber-500 text-sm" id="avg-stars">★★★★★</div>
+                    <div id="review-count" class="text-[10px] text-slate-500 mt-1">0 reviews</div>
+                </div>
+                <div class="flex-1 text-[10px] text-slate-500">
+                    Kelola review yang sudah kamu tulis dan pantau performanya di sini.
+                </div>
             </div>
+        </div>
+
+        <div id="reviews-list" class="space-y-4" data-aos="fade-up">
+            <div class="text-center text-slate-500 text-sm">Memuat...</div>
         </div>
     </div>
 </div>
@@ -28,19 +42,33 @@ async function loadMyReviews(){
     try{
         const res = await axios.get('/api/reviews/my');
         const items = res.data.data || [];
+        const avgEl = document.getElementById('avg-rating');
+        const starsEl = document.getElementById('avg-stars');
+        const countEl = document.getElementById('review-count');
+        if (items.length) {
+            const sum = items.reduce((acc, r) => acc + (r.rating || 0), 0);
+            const avg = (sum / items.length).toFixed(1);
+            avgEl.textContent = avg;
+            starsEl.textContent = '★'.repeat(Math.round(avg)).padEnd(5, '☆');
+            countEl.textContent = `${items.length} reviews`;
+        } else {
+            avgEl.textContent = '0.0';
+            starsEl.textContent = '☆☆☆☆☆';
+            countEl.textContent = '0 reviews';
+        }
         if(items.length===0){ 
             document.getElementById('reviews-list').innerHTML = '<div class="text-center text-gray-500">Belum ada review</div>'; 
             return; 
         }
         document.getElementById('reviews-list').innerHTML = items.map(r=>`
-            <div class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-6 shadow-sm hover:-translate-y-1 hover:shadow-xl transition transform">
-                <div class="flex justify-between items-start gap-4">
-                    <div class="flex-1 space-y-2">
-                        <h3 class="font-semibold text-lg text-slate-900 tracking-tight">${r.destination?.name || '—'}</h3>
-                        <p class="text-sm text-amber-600 font-semibold">${'⭐'.repeat(r.rating)} <span class="text-slate-500 font-normal">${r.rating}/5</span></p>
-                        <p class="text-slate-700 leading-relaxed text-sm">${r.description}</p>
+            <div class="app-card p-4">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="space-y-1">
+                        <div class="text-sm font-semibold text-slate-900">${r.destination?.name || '—'}</div>
+                        <div class="app-rating">${'★'.repeat(r.rating)} <span class="text-slate-500 font-normal">${r.rating}/5</span></div>
+                        <div class="text-xs text-slate-600">${r.description || ''}</div>
                     </div>
-                    <button onclick="deleteReview(${r.id})" class="ml-4 px-4 py-2 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:border-rose-400 hover:text-rose-600 transition">Hapus</button>
+                    <button onclick="deleteReview(${r.id})" class="app-pill text-rose-600">Hapus</button>
                 </div>
             </div>`).join('');
     }catch(err){

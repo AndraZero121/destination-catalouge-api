@@ -17,6 +17,13 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'login'])->name('frontend.login');
 Route::get('/register', [AuthController::class, 'register'])->name('frontend.register');
 Route::get('/logout', [AuthController::class, 'logoutView'])->name('frontend.logout');
+Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('frontend.forgot');
+Route::get('/auth/{provider}', [AuthController::class, 'redirectToProvider'])
+    ->where('provider', 'google|facebook')
+    ->name('frontend.auth.redirect');
+Route::get('/auth/{provider}/callback', [AuthController::class, 'handleProviderCallback'])
+    ->where('provider', 'google|facebook')
+    ->name('frontend.auth.callback');
 
 // Destination routes (frontend, non-API)
 Route::get('/frontend/destinations', [DestinationController::class, 'index'])->name('frontend.destinations');

@@ -16,6 +16,8 @@ class User extends Authenticatable
         'email',
         'phone',
         'photo_url',
+        'oauth_provider',
+        'oauth_id',
         'password',
     ];
 
@@ -28,6 +30,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_logout_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

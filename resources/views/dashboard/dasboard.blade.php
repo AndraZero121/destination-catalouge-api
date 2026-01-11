@@ -1,135 +1,190 @@
+@php($appPage = true)
 @extends('layouts.app')
 
 @section('content')
-<div class="space-y-10">
-    <section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-blue-900 to-sky-700 text-white shadow-xl">
-        <div class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.25),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(56,189,248,0.35),transparent_30%)]"></div>
-        <div class="relative p-8 md:p-10 flex flex-col md:flex-row md:items-center gap-8">
-            <div class="flex-1 space-y-4">
-                <p class="text-sm uppercase tracking-[0.12em] text-white/70">Dashboard</p>
-                <h1 class="text-3xl md:text-4xl font-semibold tracking-tight">Panel perjalananmu</h1>
-                <p class="text-white/80 max-w-2xl">Pantau destinasi, review, dan simpanan favoritmu dalam satu tampilan yang ringkas.</p>
-                <div class="p-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur">
-                    <div id="profile-summary" class="text-white">Memuat profil...</div>
-                </div>
-                <div class="flex flex-wrap gap-3">
-                    <a href="/frontend/destinations" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-slate-900 font-semibold hover:-translate-y-0.5 transition transform shadow-lg shadow-slate-900/10">
-                        Mulai jelajah
-                    </a>
-                    <a href="/frontend/saved" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/40 text-white hover:bg-white/10 transition">Lihat yang disimpan</a>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3 w-full md:w-80">
-                <div class="rounded-xl bg-white/10 border border-white/20 p-4">
-                    <p class="text-white/60 text-sm">Destinasi</p>
-                    <p class="text-2xl font-semibold mt-2">Koleksi kurasi</p>
-                    <p class="text-white/60 text-xs mt-1">Pilih yang sesuai budget & vibe-mu.</p>
-                </div>
-                <div class="rounded-xl bg-white/10 border border-white/20 p-4">
-                    <p class="text-white/60 text-sm">Review</p>
-                    <p class="text-2xl font-semibold mt-2">Punya suara</p>
-                    <p class="text-white/60 text-xs mt-1">Bagikan pengalamanmu ke traveler lain.</p>
-                </div>
-                <div class="rounded-xl bg-white/10 border border-white/20 p-4">
-                    <p class="text-white/60 text-sm">Saved</p>
-                    <p class="text-2xl font-semibold mt-2">Simpan cepat</p>
-                    <p class="text-white/60 text-xs mt-1">Satukan wishlist perjalanan.</p>
-                </div>
-                <div class="rounded-xl bg-white/10 border border-white/20 p-4">
-                    <p class="text-white/60 text-sm">Profil</p>
-                    <p class="text-2xl font-semibold mt-2">Kendali penuh</p>
-                    <p class="text-white/60 text-xs mt-1">Kelola identitas dan keamananmu.</p>
-                </div>
-            </div>
+<div class="app-shell">
+    <div class="app-topbar animate__animated animate__fadeInDown">
+        <div class="app-logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1f5f1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"></path>
+                <circle cx="12" cy="10" r="2.5"></circle>
+            </svg>
+            Destin.id
         </div>
-    </section>
+        <button id="app-avatar-btn" class="app-avatar" data-app-avatar aria-label="Profile menu">D</button>
+    </div>
 
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-        <a href="/frontend/destinations" class="group border border-slate-200 rounded-xl p-6 bg-white/70 backdrop-blur shadow-sm hover:-translate-y-1 hover:shadow-lg transition transform">
-            <div class="flex items-center justify-between">
-                <h3 class="text-xl font-semibold text-slate-900">Destinations</h3>
-                <span class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-600 to-cyan-400 text-white flex items-center justify-center shadow-md shadow-blue-400/30">🗺️</span>
-            </div>
-            <p class="text-sm text-slate-600 mt-3 leading-relaxed">Kurasi inspirasi liburan dengan detail budget, lokasi, dan foto.</p>
-            <div class="mt-4 inline-flex items-center gap-2 text-blue-600 font-medium">Jelajahi <span aria-hidden="true">→</span></div>
-        </a>
-        <a href="/reviews" class="group border border-slate-200 rounded-xl p-6 bg-white/70 backdrop-blur shadow-sm hover:-translate-y-1 hover:shadow-lg transition transform">
-            <div class="flex items-center justify-between">
-                <h3 class="text-xl font-semibold text-slate-900">My Reviews</h3>
-                <span class="h-10 w-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-400 text-white flex items-center justify-center shadow-md shadow-amber-400/30">⭐</span>
-            </div>
-            <p class="text-sm text-slate-600 mt-3 leading-relaxed">Simpan catatan pengalamanmu untuk membantu traveler lain.</p>
-            <div class="mt-4 inline-flex items-center gap-2 text-amber-600 font-medium">Kelola review <span aria-hidden="true">→</span></div>
-        </a>
-        <a href="/frontend/saved" class="group border border-slate-200 rounded-xl p-6 bg-white/70 backdrop-blur shadow-sm hover:-translate-y-1 hover:shadow-lg transition transform">
-            <div class="flex items-center justify-between">
-                <h3 class="text-xl font-semibold text-slate-900">Saved</h3>
-                <span class="h-10 w-10 rounded-full bg-gradient-to-br from-pink-500 to-rose-400 text-white flex items-center justify-center shadow-md shadow-rose-400/30">❤️</span>
-            </div>
-            <p class="text-sm text-slate-600 mt-3 leading-relaxed">Lacak wishlist perjalananmu tanpa kehilangan inspirasi.</p>
-            <div class="mt-4 inline-flex items-center gap-2 text-rose-600 font-medium">Buka daftar <span aria-hidden="true">→</span></div>
-        </a>
-    </section>
+    <div class="app-search" data-aos="fade-up">
+        <button id="app-menu-toggle" class="app-back" data-app-menu-toggle type="button" aria-label="Menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h16"></path>
+                <path d="M4 12h16"></path>
+                <path d="M4 18h16"></path>
+            </svg>
+        </button>
+        <input id="home-search" type="text" placeholder="Search destination" />
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f5f1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M21 21l-4.3-4.3"></path>
+        </svg>
+    </div>
 
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-6 shadow-sm">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="h-10 w-10 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center">💡</span>
-                <div>
-                    <p class="text-sm text-slate-500 uppercase tracking-[0.08em]">Tips cepat</p>
-                    <p class="text-lg font-semibold text-slate-900">Temukan spot terbaik</p>
-                </div>
-            </div>
-            <ul class="space-y-3 text-sm text-slate-700 leading-relaxed">
-                <li>• Filter destinasi lewat budget dan kota untuk shortlist yang lebih relevan.</li>
-                <li>• Manfaatkan fitur saved untuk membuat rute akhir sebelum berangkat.</li>
-                <li>• Tinggalkan review setelah trip untuk membangun rekomendasi komunitas.</li>
-            </ul>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-6 shadow-sm">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="h-10 w-10 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center">🛡️</span>
-                <div>
-                    <p class="text-sm text-slate-500 uppercase tracking-[0.08em]">Privasi & kontrol</p>
-                    <p class="text-lg font-semibold text-slate-900">Kelola akun tanpa repot</p>
-                </div>
-            </div>
-            <p class="text-sm text-slate-700 leading-relaxed">Perbarui nama, foto, serta kata sandi di halaman profil. Logout cepat tersedia di menu atas untuk menjaga sesi tetap aman.</p>
-            <div class="mt-4 flex flex-wrap gap-2">
-                <a href="/frontend/profile" class="px-4 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition">Buka profil</a>
-                <a href="/logout" class="px-4 py-2 rounded-full border border-slate-200 text-slate-700 text-sm font-semibold hover:border-blue-400 hover:text-blue-600 transition">Logout</a>
-            </div>
-        </div>
-    </section>
+    <div class="app-section" data-aos="fade-up">
+        <h2>Top Picks</h2>
+        <span class="app-pill">Destinasi</span>
+    </div>
+    <div id="home-hero" class="app-hero" data-aos="zoom-in"></div>
+
+    <div class="app-section" data-aos="fade-up">
+        <h2>List Destination</h2>
+        <a href="/frontend/destinations" class="text-xs font-semibold text-[#1f5f1c]">See all</a>
+    </div>
+    <div id="home-list" class="app-list" data-aos="fade-up"></div>
+    <div id="home-empty" class="text-center text-slate-500 text-sm hidden">Belum ada destinasi.</div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
+const heroEl = document.getElementById('home-hero');
+const listEl = document.getElementById('home-list');
+const emptyEl = document.getElementById('home-empty');
+const searchInput = document.getElementById('home-search');
+const avatarBtn = document.getElementById('app-avatar-btn');
+let listItems = [];
+let allItems = [];
+const fallbackHero = [
+    { id: 1, name: 'Pantai Klayar', photos: [{ photo_url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80' }] },
+    { id: 2, name: 'Gunung Bromo', photos: [{ photo_url: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80' }] },
+    { id: 3, name: 'Goa Pindul', photos: [{ photo_url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80' }] },
+    { id: 4, name: 'Taman Safari', photos: [{ photo_url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=800&q=80' }] }
+];
+const fallbackList = [
+    { id: 1, name: 'Wisata alam Goa Pindul', city: { name: 'Yogyakarta' }, reviews: [{ rating: 5 }, { rating: 4 }], photos: [{ photo_url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=600&q=80' }] },
+    { id: 2, name: 'Wisata alam Curug Sewu', city: { name: 'Kendal' }, reviews: [{ rating: 4 }, { rating: 4 }], photos: [{ photo_url: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80' }] },
+    { id: 3, name: 'Wisata alam Gunung Bromo', city: { name: 'Probolinggo' }, reviews: [{ rating: 5 }], photos: [{ photo_url: 'https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=600&q=80' }] },
+    { id: 4, name: 'Wisata alam Taman Safari', city: { name: 'Bogor' }, reviews: [{ rating: 4 }, { rating: 5 }, { rating: 4 }], photos: [{ photo_url: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?auto=format&fit=crop&w=600&q=80' }] }
+];
+
 function ensureAuthHeader() {
     const t = localStorage.getItem('token');
     if (t) {
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + t;
         return true;
     }
+    delete axios.defaults.headers.common['Authorization'];
     return false;
 }
 
-async function loadProfileSummary(){
-    if (!ensureAuthHeader()) {
-        document.getElementById('profile-summary').innerText = 'Tidak terautentikasi. Silakan login.';
+function renderAvatar(user){
+    const avatar = avatarBtn;
+    if(!avatar) return;
+    if(user && user.photo_url){
+        const photoUrl = user.photo_url.startsWith('http') ? user.photo_url : '/storage/' + user.photo_url.replace(/^\/+/, '');
+        avatar.innerHTML = `<img src="${photoUrl}" alt="Profile" class="h-full w-full object-cover">`;
         return;
     }
+    const name = user?.name || 'Destin';
+    avatar.textContent = (name.trim()[0] || 'D').toUpperCase();
+}
 
+async function loadProfile(){
+    if(!ensureAuthHeader()){
+        renderAvatar(null);
+        return;
+    }
     try{
         const res = await axios.get('/api/profile');
-        const u = res.data;
-        document.getElementById('profile-summary').innerHTML = `<strong>${u.name}</strong><p class="text-sm text-gray-600 mt-1">${u.email}</p>`;
+        renderAvatar(res.data);
     }catch(err){
-        if (err.response && err.response.status === 401) { clearToken(); window.location.href = '/login'; return; }
-        document.getElementById('profile-summary').innerText = 'Tidak terautentikasi. Silakan login.';
+        renderAvatar(null);
     }
 }
-loadProfileSummary();
+
+function renderHero(items){
+    if(!items.length){
+        heroEl.innerHTML = '<div class="text-sm text-slate-500">Belum ada data slider.</div>';
+        return;
+    }
+    heroEl.innerHTML = items.map(item => {
+        const cover = item.photos?.[0]?.photo_url || 'https://via.placeholder.com/400x300?text=Destination';
+        return `
+            <a href="/frontend/destinations/${item.id}" class="app-hero-card">
+                <img src="${cover}" alt="${item.name || ''}">
+                <span>${item.name || ''}</span>
+            </a>
+        `;
+    }).join('');
+}
+
+function renderList(items){
+    listItems = items;
+    if(!items.length){
+        listEl.innerHTML = '';
+        emptyEl.classList.remove('hidden');
+        return;
+    }
+    emptyEl.classList.add('hidden');
+    listEl.innerHTML = items.map(item => {
+        const cover = item.photos?.[0]?.photo_url || 'https://via.placeholder.com/300x300?text=Destination';
+        const reviews = Array.isArray(item.reviews) ? item.reviews : [];
+        const avg = reviews.length ? (reviews.reduce((a,b)=>a+(b.rating||0),0)/reviews.length).toFixed(1) : null;
+        return `
+            <a href="/frontend/destinations/${item.id}" class="app-list-item">
+                <div class="app-thumb">
+                    <img src="${cover}" alt="${item.name || ''}" class="h-full w-full object-cover">
+                </div>
+                <div>
+                    <div class="text-sm font-semibold text-slate-900">${item.name || ''}</div>
+                    <div class="text-xs text-slate-500 mt-1">${item.city?.name || 'Lokasi'} </div>
+                    <div class="app-rating mt-1">${avg ? `${avg} ★` : 'No rating'}</div>
+                </div>
+                <div class="app-arrow">›</div>
+            </a>
+        `;
+    }).join('');
+}
+
+async function loadHero(){
+    try{
+        const res = await axios.get('/api/destinations/slider');
+        const items = Array.isArray(res.data) ? res.data : [];
+        renderHero(items.length ? items : fallbackHero);
+    }catch(err){
+        try{
+            const res = await axios.get('/api/destinations');
+            const items = Array.isArray(res.data) ? res.data : (res.data.data || []);
+            renderHero(items.length ? items.slice(0, 4) : fallbackHero);
+        }catch(e){
+            renderHero(fallbackHero);
+        }
+    }
+}
+
+async function loadList(){
+    try{
+        const res = await axios.get('/api/destinations');
+        const items = Array.isArray(res.data) ? res.data : (res.data.data || []);
+        if (!items.length) {
+            allItems = fallbackList;
+        } else {
+            allItems = items.slice(0, 8);
+        }
+        renderList(allItems);
+    }catch(err){
+        allItems = fallbackList;
+        renderList(allItems);
+    }
+}
+
+searchInput.addEventListener('input', function(){
+    const q = this.value.toLowerCase();
+    const filtered = allItems.filter(item => (item.name || '').toLowerCase().includes(q));
+    renderList(filtered);
+});
+
+loadProfile();
+loadHero();
+loadList();
 </script>
 @endpush

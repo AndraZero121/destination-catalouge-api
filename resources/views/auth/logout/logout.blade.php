@@ -1,25 +1,18 @@
+@php($authPage = true)
 @extends('layouts.app')
 
 @section('content')
-<div class="text-center py-12">
-    <h1 class="text-3xl font-bold text-gray-800 mb-4">Logout</h1>
-    <p id="logout-msg" class="text-gray-600 text-lg">Memproses logout...</p>
-    <div class="mt-6 flex justify-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-    </div>
+<div class="auth-shell text-center" data-aos="fade-up">
+    <h1 class="text-2xl font-semibold text-[#1f5f1c] mb-2">Logout</h1>
+    <p class="text-sm text-slate-500">Konfirmasi logout akan muncul.</p>
 </div>
 @endsection
 
 @push('scripts')
 <script>
 (async function(){
-    try{
-        await axios.post('/api/logout');
-    }catch(e){ /* ignore */ }
-    finally {
-        clearToken();
-        document.getElementById('logout-msg').innerText = 'Anda telah logout. Kembali ke halaman login...';
-        setTimeout(()=>window.location.href='/login', 1200);
+    if(window.showLogoutModal){
+        window.showLogoutModal();
     }
 })();
 </script>

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OtpMail;
+use App\Models\Otp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
@@ -79,13 +82,16 @@ class ProfileController extends Controller
         ]);
 
         $request->validate([
-            "current_password" => "required|string",
+            "otp" => "required|string",
+            "current_password" => "sometimes|string",
             "password" => "required|string|min:8|confirmed",
         ]);
 
         $user = $request->user();
 
-        if (!Hash::check($request->current_password, $user->password)) {
+        if ($request->filled("current_password") &&
+            !Hash::check($request->current_password, $user->password)
+        ) {
             return response()->json(
                 [
                     "message" => "Current password is incorrect",
@@ -94,11 +100,40 @@ class ProfileController extends Controller
             );
         }
 
+        $otp = Otp::verify($user, Otp::TYPE_PASSWORD_CHANGE, $request->otp);
+
+        if (!$otp) {
+            return response()->json(
+                [
+                    "message" => "Invalid or expired OTP",
+                ],
+                422,
+            );
+        }
+
         $user->password = Hash::make($request->password);
         $user->save();
+        $otp->consume();
 
         return response()->json([
             "message" => "Password updated successfully",
+        ]);
+    }
+
+    public function requestPasswordChangeOtp(Request $request)
+    {
+        Log::info("ProfileController@requestPasswordChangeOtp called", [
+            "user_id" => $request->user()->id,
+        ]);
+
+        $user = $request->user();
+        $code = Otp::issue($user, Otp::TYPE_PASSWORD_CHANGE);
+        Mail::to($user->email)->send(
+            new OtpMail($code, Otp::TYPE_PASSWORD_CHANGE, Otp::TTL_MINUTES),
+        );
+
+        return response()->json([
+            "message" => "OTP sent for password change",
         ]);
     }
 }

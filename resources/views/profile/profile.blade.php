@@ -1,86 +1,85 @@
+@php($appPage = true)
 @extends('layouts.app')
 
 @section('content')
-<div class="space-y-8">
-    <div class="flex items-start justify-between flex-wrap gap-3">
-        <div>
-            <p class="text-sm uppercase text-slate-500 tracking-[0.12em]">Akun</p>
-            <h1 class="text-3xl font-semibold text-slate-900 tracking-tight">Profile</h1>
-            <p class="text-slate-600 mt-2">Perbarui identitas, foto, dan keamanan akunmu.</p>
-        </div>
-        <a href="/logout" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:border-rose-400 hover:text-rose-600 transition">Logout cepat</a>
+<div class="app-shell" data-aos="fade-up">
+    <div class="app-topbar animate__animated animate__fadeInDown">
+        <a href="/dashboard" class="app-back" aria-label="Back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+        </a>
+        <div class="text-sm font-semibold text-[#1f5f1c]">Profile</div>
+        <div class="w-9"></div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Profile Info -->
-        <div class="md:col-span-1">
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-blue-900 to-sky-700 text-white p-6 shadow-xl">
-                <div class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.25),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(56,189,248,0.35),transparent_30%)]"></div>
-                <div class="relative space-y-4">
-                    <div id="profile-photo" class="w-20 h-20 bg-white/20 border border-white/20 rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-black/20"></div>
-                    <div id="profile-area" class="text-left space-y-1">Memuat...</div>
-                    <p class="text-xs text-white/70 leading-relaxed">Kelola nama tampilan dan foto agar teman perjalananmu mudah mengenalimu.</p>
+    <div id="profile-unauth" class="app-card p-4 text-center hidden" data-aos="zoom-in">
+        <div class="text-sm font-semibold text-slate-900">Anda belum login</div>
+        <p class="text-xs text-slate-500 mt-2">Masuk untuk melihat profil dan mengelola akun.</p>
+        <div class="mt-4 flex flex-col gap-2">
+            <a href="/login" class="app-btn">Login</a>
+            <a href="/register" class="app-btn-outline">Register</a>
+        </div>
+    </div>
+
+    <div id="profile-content">
+        <div class="app-card p-5 text-center bg-[#0f4d1f] text-white" data-aos="fade-up">
+            <div id="profile-photo" class="mx-auto h-20 w-20 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-2xl"></div>
+            <div id="profile-area" class="mt-3 space-y-1">Memuat...</div>
+            <div class="mt-4 flex justify-center gap-3 text-xs">
+                <a href="/frontend/destinations" class="px-3 py-1 rounded-full bg-white/15">Explore</a>
+                <a href="/frontend/saved" class="px-3 py-1 rounded-full bg-white/15">Saved</a>
+                <a href="/reviews" class="px-3 py-1 rounded-full bg-white/15">Reviews</a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 mt-4" data-aos="fade-up">
+            <div class="app-card p-3 text-center">
+                <div class="text-xs text-slate-500">Reviews</div>
+                <div id="likes-count" class="text-lg font-semibold text-slate-900">-</div>
+            </div>
+            <div class="app-card p-3 text-center">
+                <div class="text-xs text-slate-500">Saved</div>
+                <div id="bookmark-count" class="text-lg font-semibold text-slate-900">-</div>
+            </div>
+            <div class="app-card p-3 text-center">
+                <div class="text-xs text-slate-500">Latest</div>
+                <div id="latest-comment" class="text-xs text-slate-700 mt-1">Memuat...</div>
+            </div>
+        </div>
+
+        <div class="app-card p-4 mt-4 space-y-3" data-aos="fade-up">
+            <div class="flex items-center justify-between">
+                <div class="text-sm font-semibold text-[#1f5f1c]">Aktivitas Terbaru</div>
+                <a href="/reviews" class="text-xs text-[#1f5f1c] font-semibold">Lihat semua</a>
+            </div>
+            <div id="recent-reviews" class="space-y-3 text-xs text-slate-600">
+                <div class="app-card p-3">
+                    <div class="font-semibold text-slate-900">Belum ada review</div>
+                    <div class="mt-1 text-slate-500">Bagikan pengalamanmu agar traveler lain terbantu.</div>
                 </div>
             </div>
         </div>
 
-        <!-- Forms -->
-        <div class="md:col-span-2 space-y-6">
-            <!-- Quick summary -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 shadow-sm">
-                    <p class="text-xs uppercase text-slate-500 tracking-[0.12em]">Latest Comment</p>
-                    <div id="latest-comment" class="mt-2 text-sm text-slate-700">Memuat...</div>
-                </div>
-                <div class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 shadow-sm">
-                    <p class="text-xs uppercase text-slate-500 tracking-[0.12em]">Likes</p>
-                    <div id="likes-count" class="mt-2 text-2xl font-semibold text-slate-900">-</div>
-                    <p class="text-xs text-slate-500">Jumlah ulasan yang kamu berikan.</p>
-                </div>
-                <div class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 shadow-sm">
-                    <p class="text-xs uppercase text-slate-500 tracking-[0.12em]">Bookmarks</p>
-                    <div id="bookmark-count" class="mt-2 text-2xl font-semibold text-slate-900">-</div>
-                    <p class="text-xs text-slate-500">Destinasi yang disimpan.</p>
-                </div>
-            </div>
+        <div class="app-card p-4 mt-4 space-y-3" data-aos="fade-up">
+            <div class="text-sm font-semibold text-[#1f5f1c]">Edit Profile</div>
+            <form id="profile-form" enctype="multipart/form-data" class="space-y-3">
+                <input id="name" class="auth-input" placeholder="Name" />
+                <input id="photo" type="file" class="auth-input" />
+                <button type="submit" class="app-btn">Save</button>
+            </form>
+            <div id="profile-msg" class="mt-2 p-3 rounded-lg hidden"></div>
+        </div>
 
-            <!-- Update Profile -->
-            <div class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-6 shadow-sm">
-                <h2 class="text-xl font-semibold text-slate-900 mb-4">Update Profile</h2>
-                <form id="profile-form" enctype="multipart/form-data" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Name</label>
-                        <input id="name" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Photo</label>
-                        <input id="photo" type="file" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl" />
-                    </div>
-                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl transition">Update</button>
-                </form>
-                <div id="profile-msg" class="mt-4 p-3 rounded-lg hidden"></div>
-            </div>
-
-            <!-- Change Password -->
-            <div class="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-6 shadow-sm">
-                <h2 class="text-xl font-semibold text-slate-900 mb-4">Change Password</h2>
-                <form id="password-form" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Current Password</label>
-                        <input id="current_password" type="password" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">New Password</label>
-                        <input id="new_password" type="password" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Confirm Password</label>
-                        <input id="password_confirmation" type="password" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl transition">Change Password</button>
-                </form>
-                <div id="pass-msg" class="mt-4 p-3 rounded-lg hidden"></div>
-            </div>
+        <div class="app-card p-4 mt-4 space-y-3" data-aos="fade-up">
+            <div class="text-sm font-semibold text-[#1f5f1c]">Edit Password</div>
+            <form id="password-form" class="space-y-3">
+                <input id="current_password" type="password" required class="auth-input" placeholder="Current Password" />
+                <input id="new_password" type="password" required class="auth-input" placeholder="New Password" />
+                <input id="password_confirmation" type="password" required class="auth-input" placeholder="Confirm Password" />
+                <button type="submit" class="app-btn">Save</button>
+            </form>
+            <div id="pass-msg" class="mt-2 p-3 rounded-lg hidden"></div>
         </div>
     </div>
 </div>
@@ -101,20 +100,22 @@ function ensureAuthHeader() {
 
 async function loadProfile(){
     if (!ensureAuthHeader()) {
-        // tidak login -> arahkan ke halaman login
-        window.location.href = '/login';
+        document.getElementById('profile-content').classList.add('hidden');
+        document.getElementById('profile-unauth').classList.remove('hidden');
         return;
     }
 
     try{
         const res = await axios.get('/api/profile');
         const u = res.data;
-        document.getElementById('profile-area').innerHTML = `<strong>${u.name}</strong><div class="muted">${u.email}</div>`;
+        document.getElementById('profile-content').classList.remove('hidden');
+        document.getElementById('profile-unauth').classList.add('hidden');
+        document.getElementById('profile-area').innerHTML = `<div class="text-base font-semibold">${u.name}</div><div class="text-xs text-white/70">${u.email}</div>`;
         document.getElementById('name').value = u.name || '';
         const avatar = document.getElementById('profile-photo');
         const photoUrl = u.photo_url ? (u.photo_url.startsWith('http') ? u.photo_url : '/storage/' + u.photo_url.replace(/^\/+/, '')) : null;
         if (photoUrl) {
-            avatar.innerHTML = `<img src="${photoUrl}" alt="Profile photo" class="w-full h-full object-cover rounded-2xl">`;
+            avatar.innerHTML = `<img src="${photoUrl}" alt="Profile photo" class="w-full h-full object-cover rounded-full">`;
         } else {
             avatar.innerHTML = '';
             avatar.textContent = ((u.name || '').trim()[0] || '👤').toUpperCase();
@@ -123,7 +124,8 @@ async function loadProfile(){
     }catch(err){
         if (err.response && (err.response.status === 401 || err.response.data?.message === 'Unauthenticated.')) {
             clearToken();
-            window.location.href = '/login';
+            document.getElementById('profile-content').classList.add('hidden');
+            document.getElementById('profile-unauth').classList.remove('hidden');
             return;
         }
         document.getElementById('profile-area').innerText = 'Gagal memuat profil';
@@ -145,6 +147,19 @@ function renderSummary(u){
     document.getElementById('likes-count').textContent = likesCount;
     const bookmarkCount = u.saved_count ?? (u.saved_destinations ? u.saved_destinations.length : 0);
     document.getElementById('bookmark-count').textContent = bookmarkCount;
+
+    const recentWrap = document.getElementById('recent-reviews');
+    if (!recentWrap) return;
+    if (latest) {
+        const dest = latest.destination?.name || 'Destinasi';
+        const desc = latest.description || 'Tanpa komentar';
+        recentWrap.innerHTML = `
+            <div class="app-card p-3">
+                <div class="font-semibold text-slate-900">${dest}</div>
+                <div class="mt-1 text-slate-500">${desc}</div>
+            </div>
+        `;
+    }
 }
 
 document.getElementById('profile-form').addEventListener('submit', async function(e){

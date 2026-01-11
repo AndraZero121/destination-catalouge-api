@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\DestinationController;
 use App\Http\Controllers\API\DestinationAdminController;
+use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\SavedDestinationController;
@@ -42,6 +43,11 @@ Route::get('/', function () {
 // Public routes
 Route::post("/register", [AuthController::class, "register"]);
 Route::post("/login", [AuthController::class, "login"]);
+Route::post("/login/verify-otp", [AuthController::class, "verifyLoginOtp"]);
+Route::post("/password/forgot", [AuthController::class, "forgotPassword"]);
+Route::post("/password/reset", [AuthController::class, "resetPassword"]);
+Route::get("/provinces", [LocationController::class, "provinces"]);
+Route::get("/provinces/{id}/cities", [LocationController::class, "cities"]);
 
 // Destinations (public)
 Route::get("/destinations", [DestinationController::class, "index"]);
@@ -56,6 +62,10 @@ Route::middleware(["auth:sanctum", "throttle:auth-api"])->group(function () {
     // Profile
     Route::get("/profile", [ProfileController::class, "show"]);
     Route::post("/profile/update", [ProfileController::class, "update"]);
+    Route::post("/profile/password/request-otp", [
+        ProfileController::class,
+        "requestPasswordChangeOtp",
+    ]);
     Route::post("/profile/password", [
         ProfileController::class,
         "updatePassword",

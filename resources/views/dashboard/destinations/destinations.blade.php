@@ -1,40 +1,78 @@
+@php($appPage = true)
 @extends('layouts.app')
 
 @section('content')
-<div class="space-y-8">
-    <div class="flex flex-wrap items-start justify-between gap-4">
-        <div>
-            <p class="text-sm uppercase text-slate-500 tracking-[0.12em]">Katalog</p>
-            <h1 class="text-3xl font-semibold text-slate-900 tracking-tight">Destinations</h1>
-            <p class="text-slate-600 mt-2">Jelajahi lokasi menarik dengan detail budget, kategori, dan foto yang tertata.</p>
+<div class="app-shell" data-aos="fade-up">
+    <div id="province-view">
+        <div class="app-topbar animate__animated animate__fadeInDown">
+            <a href="/dashboard" class="app-back" aria-label="Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6"></path>
+                </svg>
+            </a>
+            <div class="text-sm font-semibold text-[#1f5f1c]">Provinsi</div>
+            <div class="flex items-center gap-2">
+                <button class="app-back" data-app-menu-toggle aria-label="Menu">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 6h16"></path>
+                        <path d="M4 12h16"></path>
+                        <path d="M4 18h16"></path>
+                    </svg>
+                </button>
+                <button id="open-add" class="app-pill hidden">+ Add</button>
+            </div>
         </div>
-        <div class="flex gap-3">
-            <!-- tombol tambah hanya muncul bila user login -->
-            <button id="open-add" class="hidden px-4 py-2.5 rounded-xl bg-slate-900 text-white font-semibold shadow-lg shadow-slate-900/10 hover:-translate-y-0.5 transition">+ Tambah Destinasi</button>
-            <a href="/dashboard" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:border-blue-400 hover:text-blue-600 transition">Kembali</a>
-        </div>
+        <div id="province-list" class="app-list" data-aos="fade-up"></div>
+        <div id="province-empty" class="text-center text-slate-500 text-sm hidden">Belum ada provinsi.</div>
+        <div id="province-loading" class="text-center text-slate-500 text-sm">Memuat provinsi...</div>
     </div>
 
-    <div class="rounded-2xl border border-slate-200 bg-white/70 backdrop-blur p-4 md:p-6 shadow-sm">
-        <div id="dest-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- menampilkan loading / kosong / daftar -->
-            <div id="dest-empty" class="col-span-full text-center text-slate-500 hidden">
-                <div class="mx-auto mb-4 h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center text-2xl">📭</div>
-                <h3 class="text-lg font-semibold mb-2 text-slate-800">Belum ada destinasi</h3>
-                <p class="text-sm text-slate-600 mb-4">Tambah destinasi baru untuk mulai mengisi katalog perjalananmu.</p>
-                <div class="flex items-center justify-center gap-3 flex-wrap">
-                    <a href="/dashboard" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-700">Kembali ke Dashboard</a>
-                    <button id="open-add-empty" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-semibold hover:-translate-y-0.5 transition hidden">+ Tambah Destinasi</button>
-                </div>
-            </div>
-
-            <div id="dest-loading" class="col-span-full text-center text-slate-500">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-700">
-                    <span class="h-2 w-2 rounded-full bg-blue-500 animate-ping"></span>
-                    Memuat destinasi...
-                </div>
+    <div id="city-view" class="hidden">
+        <div class="app-topbar animate__animated animate__fadeInDown">
+            <button id="back-province" class="app-back" aria-label="Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6"></path>
+                </svg>
+            </button>
+            <div id="city-title" class="text-sm font-semibold text-[#1f5f1c]">Kota</div>
+            <div class="flex items-center gap-2">
+                <button class="app-back" data-app-menu-toggle aria-label="Menu">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 6h16"></path>
+                        <path d="M4 12h16"></path>
+                        <path d="M4 18h16"></path>
+                    </svg>
+                </button>
+                <span class="app-pill">Kota</span>
             </div>
         </div>
+        <div id="city-list" class="app-list" data-aos="fade-up"></div>
+        <div id="city-empty" class="text-center text-slate-500 text-sm hidden">Belum ada kota.</div>
+        <div id="city-loading" class="text-center text-slate-500 text-sm">Memuat kota...</div>
+    </div>
+
+    <div id="dest-view" class="hidden">
+        <div class="app-topbar animate__animated animate__fadeInDown">
+            <button id="back-city" class="app-back" aria-label="Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6"></path>
+                </svg>
+            </button>
+            <div id="dest-title" class="text-sm font-semibold text-[#1f5f1c]">Kota</div>
+            <div class="flex items-center gap-2">
+                <button class="app-back" data-app-menu-toggle aria-label="Menu">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 6h16"></path>
+                        <path d="M4 12h16"></path>
+                        <path d="M4 18h16"></path>
+                    </svg>
+                </button>
+                <span id="dest-count" class="app-pill">0</span>
+            </div>
+        </div>
+        <div id="dest-list" class="app-list" data-aos="fade-up"></div>
+        <div id="dest-empty" class="text-center text-slate-500 text-sm hidden">Belum ada destinasi.</div>
+        <div id="dest-loading" class="text-center text-slate-500 text-sm">Memuat destinasi...</div>
     </div>
 </div>
 
@@ -113,6 +151,23 @@ const cancelAddBtn = document.getElementById('cancel-add');
 const destListEl = document.getElementById('dest-list');
 const destLoadingEl = document.getElementById('dest-loading');
 const destEmptyEl = document.getElementById('dest-empty');
+const provinceView = document.getElementById('province-view');
+const cityView = document.getElementById('city-view');
+const destView = document.getElementById('dest-view');
+const provinceListEl = document.getElementById('province-list');
+const provinceLoadingEl = document.getElementById('province-loading');
+const provinceEmptyEl = document.getElementById('province-empty');
+const cityListEl = document.getElementById('city-list');
+const cityLoadingEl = document.getElementById('city-loading');
+const cityEmptyEl = document.getElementById('city-empty');
+const cityTitleEl = document.getElementById('city-title');
+const destTitleEl = document.getElementById('dest-title');
+const destCountEl = document.getElementById('dest-count');
+const backProvinceBtn = document.getElementById('back-province');
+const backCityBtn = document.getElementById('back-city');
+
+let selectedProvince = null;
+let selectedCity = null;
 
 function ensureAuthHeader() {
     const t = localStorage.getItem('token');
@@ -126,15 +181,21 @@ function ensureAuthHeader() {
 function showAddIfAuth() {
     if (ensureAuthHeader()) {
         openAddBtn.classList.remove('hidden');
-        openAddEmptyBtn.classList.remove('hidden');
+        if (openAddEmptyBtn) {
+            openAddEmptyBtn.classList.remove('hidden');
+        }
     } else {
         openAddBtn.classList.add('hidden');
-        openAddEmptyBtn.classList.add('hidden');
+        if (openAddEmptyBtn) {
+            openAddEmptyBtn.classList.add('hidden');
+        }
     }
 }
 
 openAddBtn.addEventListener('click', ()=> modal.classList.remove('hidden'));
-openAddEmptyBtn.addEventListener('click', ()=> modal.classList.remove('hidden'));
+if (openAddEmptyBtn) {
+    openAddEmptyBtn.addEventListener('click', ()=> modal.classList.remove('hidden'));
+}
 closeAddBtn.addEventListener('click', ()=> modal.classList.add('hidden'));
 cancelAddBtn.addEventListener('click', ()=> modal.classList.add('hidden'));
 
@@ -143,55 +204,139 @@ async function loadDestinations(){
     destEmptyEl.classList.add('hidden');
     try{
         ensureAuthHeader(); // optional
-        const res = await axios.get('/api/destinations');
+        const params = {};
+        if (selectedProvince) params.province_id = selectedProvince.id;
+        if (selectedCity) params.city_id = selectedCity.id;
+        const res = await axios.get('/api/destinations', { params });
         const items = Array.isArray(res.data) ? res.data : (res.data.data || []);
         destLoadingEl.classList.add('hidden');
 
         if(!items || items.length===0){
             // tampilkan ilustrasi kosong
             destEmptyEl.classList.remove('hidden');
+            destCountEl.textContent = '0';
             return;
         }
 
         destEmptyEl.classList.add('hidden');
+        destCountEl.textContent = `${items.length}`;
         const html = items.map(d=>{
-            const cover = d.photos && d.photos[0] ? d.photos[0].photo_url : 'https://via.placeholder.com/900x600?text=Destination';
-            const desc = (d.description||'').slice(0,140) + ((d.description||'').length>140 ? '...' : '');
-            const budget = `Rp ${new Intl.NumberFormat('id-ID').format(d.budget_min||0)} • Rp ${new Intl.NumberFormat('id-ID').format(d.budget_max||0)}`;
+            const cover = d.photos && d.photos[0] ? d.photos[0].photo_url : 'https://via.placeholder.com/300x300?text=Destination';
             const reviews = Array.isArray(d.reviews) ? d.reviews : [];
             const avgRating = reviews.length ? (reviews.reduce((a,b)=>a+(b.rating||0),0)/reviews.length).toFixed(1) : null;
             return `
-            <div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/80 backdrop-blur shadow-sm hover:-translate-y-1 hover:shadow-xl transition transform">
-                <div class="relative h-48">
-                    <img src="${cover}" alt="${d.name}" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/25 to-transparent"></div>
-                    <div class="absolute bottom-3 left-3 flex flex-wrap gap-2">
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white/80 text-slate-900 backdrop-blur">${d.category?.name || 'Tanpa kategori'}</span>
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-black/30 text-white backdrop-blur">${d.city?.name || 'Lokasi'}</span>
-                        ${avgRating ? `<span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-100 backdrop-blur">⭐ ${avgRating}</span>` : ''}
-                    </div>
+            <a href="/frontend/destinations/${d.id}" class="app-list-item">
+                <div class="app-thumb">
+                    <img src="${cover}" alt="${d.name}" class="h-full w-full object-cover">
                 </div>
-                <div class="p-5 space-y-3">
-                    <div class="flex items-start justify-between gap-3">
-                        <a href="/frontend/destinations/${d.id}" class="font-semibold text-lg text-slate-900 tracking-tight leading-tight hover:text-blue-700 transition">${d.name}</a>
-                        <span class="text-xs uppercase tracking-[0.18em] text-slate-400">ID ${d.id}</span>
-                    </div>
-                    <p class="text-sm text-slate-600 leading-relaxed">${desc}</p>
-                    <div class="flex items-center justify-between text-sm text-slate-700">
-                        <p class="font-semibold text-blue-700">${budget}</p>
-                        <a href="/frontend/destinations/${d.id}" class="inline-flex items-center gap-2 text-slate-700 font-semibold group-hover:text-blue-700 transition">Detail <span aria-hidden="true">→</span></a>
-                    </div>
+                <div>
+                    <div class="text-sm font-semibold text-slate-900">${d.name}</div>
+                    <div class="text-xs text-slate-500 mt-1">${d.city?.name || 'Lokasi'}</div>
+                    <div class="app-rating mt-1">${avgRating ? `${avgRating} ★` : 'No rating'}</div>
                 </div>
-            </div>`;
+                <div class="app-arrow">›</div>
+            </a>`;
         }).join('');
         destListEl.innerHTML = html;
         showAddIfAuth();
     }catch(err){
         destLoadingEl.classList.add('hidden');
-        destListEl.innerHTML = '<div class="col-span-full text-center text-red-500">Gagal memuat destinasi</div>';
+        destListEl.innerHTML = '<div class="p-4 text-sm text-red-500">Gagal memuat destinasi</div>';
     }
 }
-loadDestinations();
+
+function showView(target){
+    provinceView.classList.toggle('hidden', target !== 'province');
+    cityView.classList.toggle('hidden', target !== 'city');
+    destView.classList.toggle('hidden', target !== 'dest');
+}
+
+async function loadProvinces(){
+    provinceLoadingEl.classList.remove('hidden');
+    provinceEmptyEl.classList.add('hidden');
+    try{
+        const res = await axios.get('/api/provinces');
+        const items = Array.isArray(res.data) ? res.data : (res.data.data || []);
+        provinceLoadingEl.classList.add('hidden');
+        if(!items.length){
+            provinceEmptyEl.classList.remove('hidden');
+            return;
+        }
+        provinceListEl.innerHTML = items.map(p => `
+            <button class="app-list-item" data-id="${p.id}" data-name="${p.name}">
+                <div class="app-thumb"></div>
+                <div>
+                    <div class="text-sm font-semibold text-slate-900">${p.name}</div>
+                    <div class="text-xs text-slate-500 mt-1">Pilih provinsi</div>
+                </div>
+                <div class="app-arrow">›</div>
+            </button>
+        `).join('');
+    }catch(err){
+        provinceLoadingEl.classList.add('hidden');
+        provinceListEl.innerHTML = '<div class="p-4 text-sm text-red-500">Gagal memuat provinsi</div>';
+    }
+}
+
+async function loadCities(){
+    if(!selectedProvince) return;
+    cityTitleEl.textContent = selectedProvince.name || 'Kota';
+    cityLoadingEl.classList.remove('hidden');
+    cityEmptyEl.classList.add('hidden');
+    try{
+        const res = await axios.get(`/api/provinces/${selectedProvince.id}/cities`);
+        const items = Array.isArray(res.data) ? res.data : (res.data.data || []);
+        cityLoadingEl.classList.add('hidden');
+        if(!items.length){
+            cityEmptyEl.classList.remove('hidden');
+            return;
+        }
+        cityListEl.innerHTML = items.map(c => `
+            <button class="app-list-item" data-id="${c.id}" data-name="${c.name}">
+                <div class="app-thumb"></div>
+                <div>
+                    <div class="text-sm font-semibold text-slate-900">${c.name}</div>
+                    <div class="text-xs text-slate-500 mt-1">${selectedProvince.name || 'Provinsi'}</div>
+                </div>
+                <div class="app-arrow">›</div>
+            </button>
+        `).join('');
+    }catch(err){
+        cityLoadingEl.classList.add('hidden');
+        cityListEl.innerHTML = '<div class="p-4 text-sm text-red-500">Gagal memuat kota</div>';
+    }
+}
+
+provinceListEl.addEventListener('click', function(e){
+    const btn = e.target.closest('button[data-id]');
+    if(!btn) return;
+    selectedProvince = { id: btn.dataset.id, name: btn.dataset.name };
+    showView('city');
+    loadCities();
+});
+
+cityListEl.addEventListener('click', function(e){
+    const btn = e.target.closest('button[data-id]');
+    if(!btn) return;
+    selectedCity = { id: btn.dataset.id, name: btn.dataset.name };
+    destTitleEl.textContent = selectedCity.name || 'Kota';
+    showView('dest');
+    loadDestinations();
+});
+
+backProvinceBtn.addEventListener('click', function(){
+    selectedProvince = null;
+    selectedCity = null;
+    showView('province');
+});
+
+backCityBtn.addEventListener('click', function(){
+    selectedCity = null;
+    showView('city');
+});
+
+showView('province');
+loadProvinces();
 
 // Submit add form (sama seperti sebelumnya)
 document.getElementById('add-form').addEventListener('submit', async function(e){
